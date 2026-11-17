@@ -18,6 +18,9 @@ jobs:
           cache: true
       - name: Crear plataforma Windows
         run: flutter create --platforms=windows --project-name lexair_downloader .
+      - name: Aplicar icono de Studio Lexair
+        shell: pwsh
+        run: Copy-Item assets/app_icon.ico windows/runner/resources/app_icon.ico -Force
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
@@ -31,7 +34,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'No se pudo verificar yt-dlp' }
       - name: Preparar paquete
         shell: pwsh
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Lexair-Download-Windows.zip
+        run: |
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Lexair-Download-Windows.zip
+          Compress-Archive -Path extension/* -DestinationPath Lexair-Extension-Navegador.zip
       - uses: actions/upload-artifact@v4
         with:
           name: Lexair-Download-Windows
@@ -40,5 +45,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: Lexair-Download-Windows.zip
+          files: |
+            Lexair-Download-Windows.zip
+            Lexair-Extension-Navegador.zip
           generate_release_notes: true

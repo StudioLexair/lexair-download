@@ -1,0 +1,9 @@
+LEXAIR · EXTENSIÓN DE NAVEGADOR (versión experimental)
+
+1. Extrae todo este ZIP en una carpeta y mantenla ahí.
+2. En Chrome abre chrome://extensions o en Edge abre edge://extensions.
+3. Activa Modo de desarrollador y pulsa Cargar descomprimida.
+4. Selecciona la carpeta que contiene manifest.json.
+5. Abre una página, pulsa el icono de la extensión y después Buscar en esta página. Copia un enlace detectado y pégalo en Lexair Download.
+
+Solo examina la pestaña al pulsar Buscar. No detecta todos los reproductores, enlaces blob, ni contenido protegido por DRM. No se conecta automáticamente a la aplicación. No está publicada en las tiendas. No se ha comprobado en todos los navegadores.

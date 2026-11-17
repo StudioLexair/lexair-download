@@ -30,6 +30,7 @@ class _DownloadPageState extends State<DownloadPage> {
   final url = TextEditingController();
   String? folder;
   String quality = 'Mejor disponible';
+  String mode = 'Vídeo';
   String status = 'Listo para descargar';
   String log = '';
   Process? process;
@@ -46,7 +47,7 @@ class _DownloadPageState extends State<DownloadPage> {
     if (folder == null) { setState(() => status = 'Selecciona una carpeta de destino.'); return; }
     final tool = File(p.join(p.dirname(Platform.resolvedExecutable), 'yt-dlp.exe'));
     if (!await tool.exists()) { setState(() => status = 'No se encuentra yt-dlp.exe junto a la aplicación. Descarga el paquete completo.'); return; }
-    final format = quality == 'Hasta 720p' ? 'best[height<=720]/best' : 'best';
+    final format = mode == 'Audio' ? 'bestaudio/best' : (quality == 'Hasta 720p' ? 'best[height<=720]/best' : 'best');
     setState(() { busy = true; status = 'Iniciando descarga…'; log = ''; });
     try {
       final child = await Process.start(tool.path, [
@@ -69,15 +70,17 @@ class _DownloadPageState extends State<DownloadPage> {
     body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 850), child: SingleChildScrollView(
       padding: const EdgeInsets.all(32), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [Icon(Icons.play_circle_fill_rounded, color: Color(0xffa69aff), size: 38), SizedBox(width: 12), Text('LEXAIR DOWNLOAD', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900, letterSpacing: 1.5)), Spacer(), Text('STUDIO LEXAIR', style: TextStyle(color: Colors.white54, letterSpacing: 2))]),
-        const SizedBox(height: 40), const Text('Tus vídeos,\na tu manera.', style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold, height: 1.1)),
-        const SizedBox(height: 12), const Text('Descarga contenido autorizado de sitios compatibles.', style: TextStyle(color: Colors.white60, fontSize: 16)),
+        const SizedBox(height: 40), const Text('Tu contenido,\na tu manera.', style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold, height: 1.1)),
+        const SizedBox(height: 12), const Text('Descarga vídeo y audio autorizado de sitios compatibles.', style: TextStyle(color: Colors.white60, fontSize: 16)),
         const SizedBox(height: 32),
-        TextField(controller: url, enabled: !busy, decoration: const InputDecoration(labelText: 'Enlace del vídeo', hintText: 'https://...', prefixIcon: Icon(Icons.link), border: OutlineInputBorder())),
+        TextField(controller: url, enabled: !busy, decoration: const InputDecoration(labelText: 'Enlace del contenido', hintText: 'https://...', prefixIcon: Icon(Icons.link), border: OutlineInputBorder())),
+        const SizedBox(height: 16),
+        SegmentedButton<String>(segments: const [ButtonSegment(value: 'Vídeo', label: Text('Vídeo'), icon: Icon(Icons.videocam_outlined)), ButtonSegment(value: 'Audio', label: Text('Audio'), icon: Icon(Icons.music_note))], selected: {mode}, onSelectionChanged: busy ? null : (value) => setState(() => mode = value.first)),
         const SizedBox(height: 16),
         Row(children: [Expanded(child: OutlinedButton.icon(onPressed: busy ? null : () async { final selected = await getDirectoryPath(); if (selected != null && mounted) setState(() => folder = selected); }, icon: const Icon(Icons.folder_open), label: Text(folder ?? 'Elegir carpeta', maxLines: 1, overflow: TextOverflow.ellipsis))), const SizedBox(width: 12), DropdownButton<String>(value: quality, onChanged: busy ? null : (value) => setState(() => quality = value!), items: const [DropdownMenuItem(value: 'Mejor disponible', child: Text('Mejor disponible')), DropdownMenuItem(value: 'Hasta 720p', child: Text('Hasta 720p'))])]),
-        const SizedBox(height: 20), SizedBox(width: double.infinity, height: 52, child: FilledButton.icon(onPressed: busy ? null : download, icon: const Icon(Icons.download), label: Text(busy ? 'Descargando…' : 'Descargar vídeo'))),
+        const SizedBox(height: 20), SizedBox(width: double.infinity, height: 52, child: FilledButton.icon(onPressed: busy ? null : download, icon: const Icon(Icons.download), label: Text(busy ? 'Descargando…' : 'Descargar contenido'))),
         const SizedBox(height: 20), Text(status), if (busy) ...[const SizedBox(height: 10), const LinearProgressIndicator()],
         const SizedBox(height: 20), if (log.isNotEmpty) Container(width: double.infinity, constraints: const BoxConstraints(maxHeight: 180), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(12)), child: SingleChildScrollView(reverse: true, child: SelectableText(log, style: const TextStyle(fontSize: 12, color: Colors.white70)))),
-        const SizedBox(height: 30), const Text('Usa esta herramienta solo con contenido propio o con permiso. No admite contenido protegido por DRM. La compatibilidad depende de cada sitio.', style: TextStyle(color: Colors.white54, fontSize: 12)),
+        const SizedBox(height: 30), const Text('Usa esta herramienta solo con contenido propio o con permiso. No admite contenido protegido por DRM. El audio se guarda en su formato original, no necesariamente MP3. La compatibilidad depende de cada sitio.', style: TextStyle(color: Colors.white54, fontSize: 12)),
       ])))));
 }

@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
     paths: ['site/**', '.github/workflows/pages.yml']
+  workflow_run:
+    workflows: ['Compilar Windows']
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
@@ -13,12 +16,21 @@ concurrency:
   cancel-in-progress: true
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Incluir última descarga disponible
+        shell: bash
+        run: |
+          mkdir -p site/downloads
+          curl --fail --silent --show-error --location --retry 3 -o site/downloads/Lexair-Download-Windows.zip https://github.com/StudioLexair/lexair-download/releases/latest/download/Lexair-Download-Windows.zip || rm -f site/downloads/Lexair-Download-Windows.zip
+          curl --fail --silent --show-error --location --retry 3 -o site/downloads/Lexair-Extension-Navegador.zip https://github.com/StudioLexair/lexair-download/releases/latest/download/Lexair-Extension-Navegador.zip || rm -f site/downloads/Lexair-Extension-Navegador.zip
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

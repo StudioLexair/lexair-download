@@ -5,6 +5,6 @@ void main() {
   testWidgets('Muestra el formulario de descarga', (tester) async {
     await tester.pumpWidget(const LexairApp());
     expect(find.text('LEXAIR DOWNLOAD'), findsOneWidget);
-    expect(find.text('Descargar vídeo'), findsOneWidget);
+    expect(find.text('Descargar contenido'), findsOneWidget);
   });
 }

@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Lexair · Detectar enlaces",
+  "version": "1.0.0",
+  "description": "Encuentra y copia enlaces visibles de vídeo y audio para Lexair Download.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {"default_popup": "popup.html", "default_title": "Lexair: detectar enlaces"}
+}

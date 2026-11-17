@@ -56,6 +56,8 @@ jobs:
         run: |
           flutter create --platforms=windows --project-name lexair_desktop .
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # flutter create inserts an unrelated counter-app test; keep Lexair's own tests.
+          if (Test-Path test/widget_test.dart) { Remove-Item test/widget_test.dart }
           Copy-Item app_icon.ico windows/runner/resources/app_icon.ico -Force
           flutter pub get
       - name: Analizar y probar

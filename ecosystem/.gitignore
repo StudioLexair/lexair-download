@@ -1,0 +1,7 @@
+.dart_tool/
+.flutter-plugins*
+build/
+node_modules/
+dist/
+apps/desktop/windows/
+*.g.dart

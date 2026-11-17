@@ -1,0 +1,17 @@
+name: lexair_download_queue
+publish_to: none
+version: 0.1.0
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  lexair_download_engine:
+    path: ../download_engine
+  lexair_storage_core:
+    path: ../storage_core
+dev_dependencies:
+  drift: ^2.30.0
+  sqlite3: ^3.0.0
+  flutter_test:
+    sdk: flutter

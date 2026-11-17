@@ -13,6 +13,10 @@ dependencies:
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7
+  lexair_download_engine:
+    path: ../../packages/download_engine
+  lexair_download_queue:
+    path: ../../packages/download_queue
   lexair_design_system:
     path: ../../packages/design_system
   lexair_storage_core:

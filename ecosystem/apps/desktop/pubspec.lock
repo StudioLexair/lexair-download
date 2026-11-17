@@ -351,6 +351,20 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
+  lexair_download_engine:
+    dependency: "direct main"
+    description:
+      path: "../../packages/download_engine"
+      relative: true
+    source: path
+    version: "0.1.0"
+  lexair_download_queue:
+    dependency: "direct main"
+    description:
+      path: "../../packages/download_queue"
+      relative: true
+    source: path
+    version: "0.1.0"
   lexair_storage_core:
     dependency: "direct main"
     description:

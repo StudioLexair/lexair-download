@@ -95,12 +95,13 @@ class DownloadQueueWorker {
   }
 
   /// Processes one queued item, optionally using its saved checkpoint.
-  Future<bool> runNext() async {
+  Future<bool> runNext({Future<void> Function()? onClaim}) async {
     if (_busy) throw StateError('El trabajador ya está ocupado');
     _busy = true;
     try {
       final entry = await store.claimNext();
       if (entry == null) return false;
+      await onClaim?.call();
       try {
         final saved = await QueueCheckpointStore(store.db).get(entry.id);
         if (saved == null) {

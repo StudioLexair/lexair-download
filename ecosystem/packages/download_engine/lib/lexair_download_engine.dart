@@ -7,3 +7,4 @@ export 'src/checkpoint_capture.dart';
 export 'src/publish_partial.dart';
 export 'src/pausable_capture.dart';
 export 'src/pause_request.dart';
+export 'src/address_policy.dart' show AddressPolicy;

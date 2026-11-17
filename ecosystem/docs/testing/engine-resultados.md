@@ -29,3 +29,6 @@ Linux y Dart 3.14/Flutter 3.50: análisis limpios; 31 pruebas del motor y 8 de c
 
 ## Pausa durante reanudación (17 de noviembre de 2026)
 En Linux: análisis limpios y 35 pruebas del motor y 10 de cola aprobadas. La prueba integrada inicia checkpoint a 4 bytes, reanuda por 206, solicita pausa a 8 bytes, verifica el nuevo hash y checkpoint, cierra/reabre SQLite y completa desde el offset 8; se usa servidor local con adaptadores de prueba. Se comprobó la reversión transaccional si cambia el checkpoint anterior, y pruebas del motor cubren pausa, final al último chunk, hash incorrecto y cuerpo excesivo. No se ha interrumpido el proceso Dart durante la adición o commit, ni se ha probado Windows, corte de energía o fuente pública integral. Continúan las restricciones documentadas.
+
+## Interfaz de descarga directa (17 de noviembre de 2026)
+En Linux: `flutter analyze --no-fatal-infos` sin errores ni advertencias, con 13 avisos informativos de deprecación del import Material; 3 pruebas de app aprobadas, incluidas navegación, aviso de ejecutable y cancelación, y controlador con servidor HTTP local y adaptador de prueba. Se ejecutaron 35 pruebas de motor y 10 de cola. Las pruebas locales no ejercitan la fuente pública contra servidores externos ni prueban interactivamente Windows; no constituye auditoría de seguridad.

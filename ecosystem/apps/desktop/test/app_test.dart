@@ -26,7 +26,7 @@ void main() {
     expect(find.text('Búsqueda: música'), findsOneWidget);
     await tester.tap(find.text('Descargar'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Módulo pendiente'), findsOneWidget);
+    expect(find.text('Descarga directa experimental'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
     await database.close();
   });

@@ -1,3 +1,8 @@
+import 'package:http/testing.dart';
+import 'package:http/http.dart' as http;
+import 'package:lexair_desktop/features/ads/ad_controller.dart';
+import 'package:lexair_desktop/features/ads/ad_api.dart';
+import 'package:lexair_desktop/features/ads/ad_store.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,7 +15,7 @@ void main() {
   testWidgets('muestra el inicio y sección pendiente', (tester) async {
     final database = LexairDatabase(NativeDatabase.memory());
     await tester.pumpWidget(ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(database)],
+      overrides: [databaseProvider.overrideWithValue(database), adControllerProvider.overrideWith((ref) => AdController(AdStore(database), AdApi(MockClient((_) async => http.Response('{\"ok\":true,\"floating\":null,\"inline\":null}', 200)))))],
       child: const LexairApp(),
     ));
     await tester.pumpAndSettle();

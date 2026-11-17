@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../app/sections.dart';
+import '../features/ads/ad_host.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.currentPath, required this.child});
@@ -37,7 +38,7 @@ class AppShell extends StatelessWidget {
           )),
         ]),
       )),
-      Expanded(child: child),
+      Expanded(child: currentPath == '/' ? AdHost(child: child) : child),
     ]),
   );
 }

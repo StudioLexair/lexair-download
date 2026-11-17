@@ -35,3 +35,6 @@ En Linux: `flutter analyze --no-fatal-infos` sin errores ni advertencias, con 13
 
 ## UI: progreso y pausa cooperativa (17 de noviembre de 2026)
 Linux: 5 pruebas de aplicación aprobadas, incluyendo control de modo pausa y controlador con servidor HTTP local/adaptadores de prueba: mostrar progreso, solicitar pausa, guardar checkpoint y reanudar con Range. Analizador sin errores ni advertencias, con 13 avisos informativos de Material deprecado; regresión: 35 pruebas motor y 10 cola correctas. Sin pruebas contra la fuente pública completa, sin prueba interactiva en Windows ni simulación de cortes en las ventanas de escritura y commit. Ver `docs/architecture/ui-descarga-experimental.md`.
+
+## Integración de anuncios nativa (17 de noviembre de 2026)
+Linux Flutter 3.50: `flutter analyze --no-fatal-infos` sin errores/advertencias, con avisos informativos de Material deprecado; 14 pruebas de app aprobadas. Incluye validación de URLs, visitante persistente, frecuencia, supresión en formulario/rutas sensibles, un flotante y un inline, retardo/autocierre y reintento de outbox tras reapertura. `flutter build bundle --target-platform linux-x64` completado. HTTP, eventos y contenido de pruebas son simulados; no se han enviado eventos reales ni probado reproducción vídeo o UI en Windows.

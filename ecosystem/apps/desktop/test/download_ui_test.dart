@@ -1,3 +1,8 @@
+import 'package:http/testing.dart';
+import 'package:http/http.dart' as http;
+import 'package:lexair_desktop/features/ads/ad_controller.dart';
+import 'package:lexair_desktop/features/ads/ad_api.dart';
+import 'package:lexair_desktop/features/ads/ad_store.dart';
 import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +19,7 @@ void main() {
     final dir = Directory.systemTemp.createTempSync('lexair-widget-');
     final db = LexairDatabase(NativeDatabase.memory());
     await tester.pumpWidget(ProviderScope(overrides: [
-      databaseProvider.overrideWithValue(db), chooseDownloadFolderProvider.overrideWithValue(() async => dir.path),
+      databaseProvider.overrideWithValue(db), adControllerProvider.overrideWith((ref) => AdController(AdStore(db), AdApi(MockClient((_) async => http.Response('{\"ok\":true,\"floating\":null,\"inline\":null}', 200))))), chooseDownloadFolderProvider.overrideWithValue(() async => dir.path),
     ], child: const LexairApp()));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Descargar')); await tester.pumpAndSettle();
@@ -30,7 +35,7 @@ void main() {
   });
   testWidgets('modo de pausa se puede activar en la cola', (tester) async {
     final db = LexairDatabase(NativeDatabase.memory());
-    await tester.pumpWidget(ProviderScope(overrides: [databaseProvider.overrideWithValue(db)],
+    await tester.pumpWidget(ProviderScope(overrides: [databaseProvider.overrideWithValue(db), adControllerProvider.overrideWith((ref) => AdController(AdStore(db), AdApi(MockClient((_) async => http.Response('{\"ok\":true,\"floating\":null,\"inline\":null}', 200)))))],
       child: const MaterialApp(home: Scaffold(body: QueuePage()))));
     await tester.pumpAndSettle();
     final toggle = find.byType(SwitchListTile);

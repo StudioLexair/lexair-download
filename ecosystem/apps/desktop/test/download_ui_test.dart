@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lexair_desktop/app/app.dart';
 import 'package:lexair_desktop/app/providers.dart';
 import 'package:lexair_desktop/features/downloads/download_page.dart';
+import 'package:lexair_desktop/features/downloads/queue_page.dart';
 import 'package:lexair_storage_core/lexair_storage_core.dart';
 
 void main() {
@@ -27,4 +28,17 @@ void main() {
     expect(await DownloadQueueStore(db).list(), isEmpty);
     await tester.pumpWidget(const SizedBox.shrink()); await db.close(); dir.deleteSync(recursive: true);
   });
+  testWidgets('modo de pausa se puede activar en la cola', (tester) async {
+    final db = LexairDatabase(NativeDatabase.memory());
+    await tester.pumpWidget(ProviderScope(overrides: [databaseProvider.overrideWithValue(db)],
+      child: const MaterialApp(home: Scaffold(body: QueuePage()))));
+    await tester.pumpAndSettle();
+    final toggle = find.byType(SwitchListTile);
+    expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+    await tester.tap(toggle); await tester.pumpAndSettle();
+    expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+    expect(find.textContaining('ETag fuerte'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink()); await db.close();
+  });
+
 }

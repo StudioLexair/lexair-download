@@ -40,13 +40,14 @@ class DownloadQueueWorker {
 
   /// Opt-in cooperative pause for an initial or resumed transfer.
   Future<bool> runNextPausable({required Directory privateRoot, required PauseRequest pause,
-      void Function(int bytes, int total)? onProgress}) async {
+      void Function(int bytes, int total)? onProgress, Future<void> Function()? onClaim}) async {
     if (_busy) throw StateError('El trabajador ya está ocupado');
     _busy = true;
     try {
       final entry = await store.claimNext();
       if (entry == null) return false;
       try {
+        await onClaim?.call();
         final checkpoints = QueueCheckpointStore(store.db);
         final saved = await checkpoints.get(entry.id);
         LexairDownloadEngine.validateFilename(entry.filename);
@@ -95,26 +96,29 @@ class DownloadQueueWorker {
   }
 
   /// Processes one queued item, optionally using its saved checkpoint.
-  Future<bool> runNext({Future<void> Function()? onClaim}) async {
+  Future<bool> runNext({Future<void> Function()? onClaim,
+      void Function(int bytes, int? total)? onProgress}) async {
     if (_busy) throw StateError('El trabajador ya está ocupado');
     _busy = true;
     try {
       final entry = await store.claimNext();
       if (entry == null) return false;
-      await onClaim?.call();
       try {
+        await onClaim?.call();
         final saved = await QueueCheckpointStore(store.db).get(entry.id);
         if (saved == null) {
           await engine.download(url: Uri.parse(entry.url), directory: Directory(entry.directory),
-            filename: entry.filename, maxBytes: entry.maxBytes, expectedSha256: entry.expectedSha256);
+            filename: entry.filename, maxBytes: entry.maxBytes, expectedSha256: entry.expectedSha256,
+            onProgress: (progress) => onProgress?.call(progress.bytesReceived, progress.totalBytes));
         } else {
           final partial = File(saved.path);
           final cp = ResumeCheckpoint(url: Uri.parse(entry.url), etag: saved.etag,
             totalBytes: saved.totalBytes, partialBytes: saved.partialBytes, partialSha256: saved.sha256);
-          final hash = await resumeEngine.resume(checkpoint: cp, partial: partial,
-            maxBytes: entry.maxBytes, expectedSha256: entry.expectedSha256);
+          final outcome = await resumeEngine.resumeWithPause(checkpoint: cp, partial: partial,
+            maxBytes: entry.maxBytes, expectedSha256: entry.expectedSha256,
+            pause: PauseRequest(), onProgress: onProgress);
           await publishCompletedPartial(partial: partial, destination: Directory(entry.directory),
-            filename: entry.filename, expectedBytes: saved.totalBytes, expectedHash: hash);
+            filename: entry.filename, expectedBytes: saved.totalBytes, expectedHash: outcome.sha256);
         }
       } catch (_) {
         await store.fail(entry.id);
